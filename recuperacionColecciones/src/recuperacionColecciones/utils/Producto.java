@@ -30,11 +30,8 @@ public class Producto {
 	}
 	
 	public boolean isActivo() {
-		boolean resultado=false;
-		if(this.fechaBaja==null) {
-			resultado=true;
-		}
-		return resultado;
+		
+		return this.fechaBaja==null;
 		
 	}
 

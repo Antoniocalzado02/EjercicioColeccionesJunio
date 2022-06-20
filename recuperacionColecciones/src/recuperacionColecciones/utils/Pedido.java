@@ -2,6 +2,7 @@ package recuperacionColecciones.utils;
 
 import java.util.ArrayList;
 import java.util.Comparator;
+import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 
@@ -72,6 +73,7 @@ public class Pedido {
 	}
 	
 	public String mostrarLineasPorIdAscendente() {
+		StringBuilder sb= new StringBuilder();
 		listaLinea.sort(new Comparator<Linea>() {
 
 			@Override
@@ -79,11 +81,16 @@ public class Pedido {
 				return o1.getId().compareTo(o2.getId());
 			}
 		});
-		return listaLinea.toString();
+		
+		for (Linea i: listaLinea) {
+			sb.append("Las lineas ordenadadas por Id son \n " + i);
+		}
+		return sb.toString();
 		
 	}
 	
 	public String mostrarLineasPorPrecioDescendente() {
+		StringBuilder sb= new StringBuilder();
 		listaLinea.sort(new Comparator<Linea>() {
 
 			@Override
@@ -91,16 +98,27 @@ public class Pedido {
 				return o2.getImporte().compareTo(o1.getImporte());
 			}
 		});
-		return listaLinea.toString();
+		
+		for(Linea l: listaLinea) {
+			sb.append("Las lineas ordenadadas por Id son \n "+l);
+		}
+		return sb.toString();
 		
 	}
 	
 	public String obtenerProductos() {
+		StringBuilder sb= new StringBuilder();
 		Producto p1= new Producto();
+		List<Producto> listaProductos= new ArrayList<Producto>();
 		for (Linea i: listaLinea) {
 			p1=i.getProducto();
+			listaProductos.add(p1);
 		}
-		return p1.toString();
+		
+		for (Producto e: listaProductos) {
+			sb.append(e);
+		}
+		return sb.toString();
 		
 	}
 
@@ -169,14 +187,6 @@ public class Pedido {
 		
 	}
 	
-	public Double precioUnitariodelPedido() {
-		Double mediaProductos=0.0;
-		
-		
-		
-		return null ;
-		
-	}
 	
 	
 

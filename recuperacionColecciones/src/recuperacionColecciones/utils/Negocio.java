@@ -3,6 +3,7 @@ package recuperacionColecciones.utils;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -79,7 +80,7 @@ public class Negocio {
 		StringBuilder sb=new StringBuilder();
 		Map<Cliente,Set<Producto>> productosPorCliente= new HashMap<>();
 		for (Pedido i: listaPedido) {
-			productosPorCliente.put(i.getCliente(), null);
+			productosPorCliente.put(i.getCliente(), new HashSet<>());
 			for(Linea l: i.getListaLinea()) {
 				productosPorCliente.get(i.getCliente()).add(l.getProducto());
 			}
@@ -107,7 +108,11 @@ public class Negocio {
 				}
 			});
 		}
-		return listaPedido.toString();
+		StringBuilder sb=new StringBuilder();
+		for (Pedido p: listaPedido) {
+			sb.append(p);
+		}
+		return sb.toString();
 		
 	}
 	
@@ -130,7 +135,11 @@ public class Negocio {
 				}
 			});
 		}
-		return listaPedido.toString();
+		StringBuilder sb=new StringBuilder();
+		for(Pedido p: listaPedido) {
+			sb.append(p);
+		}
+		return sb.toString();
 		
 	}
 	
@@ -143,6 +152,7 @@ public class Negocio {
 				pedidoMayor=i;
 			}
 		}
+		
 		return pedidoMayor;
 	}
 	
@@ -178,9 +188,13 @@ public class Negocio {
 	
 	public Pedido productoMasCaro() {
 		Pedido p1=new Pedido();
+		Double valor=0.0;
 		for(Pedido i: listaPedido) {
-			if(p1.getCostePedido()<i.getCostePedido()) {
-				p1=i;
+			for(Linea l: i.getListaLinea()) {
+				if(l.getProducto().getPrecioUnitario()>valor) {
+					valor=l.getProducto().getPrecioUnitario();
+					p1=i;
+				}
 			}
 		}
 		return p1;
@@ -189,17 +203,20 @@ public class Negocio {
 	
 	public Pedido productoMasBarato() {
 		Pedido p1=new Pedido();
-		Double cantidadMenor=9999999.0;
+		Double valor=9999999.0;
 		for(Pedido i: listaPedido) {
-			if(cantidadMenor>i.getCostePedido()) {
-				p1=i;
+			for(Linea l: i.getListaLinea()) {
+				if(l.getProducto().getPrecioUnitario()<valor) {
+					valor=l.getProducto().getPrecioUnitario();
+					p1=i;
+				}
 			}
 		}
 		return p1;
 		
 	}
 	
-	public Cliente productoMasComprado() {
+	public Cliente clienteConProductoMasComprado() {
 		Map<Cliente,Integer> clienteConPedidos= new HashMap<>();
 		for(Pedido i : listaPedido) {	
 			if(!clienteConPedidos.containsKey(i.getCliente())) {
@@ -222,16 +239,16 @@ public class Negocio {
 	}
 	
 	public Cliente clienteVip() {
-		Map<Cliente,Integer> clienteConPedidos= new HashMap<>();
+		Map<Cliente,Double> clienteConPedidos= new HashMap<>();
 		for(Pedido i : listaPedido) {	
 			if(!clienteConPedidos.containsKey(i.getCliente())) {
-				clienteConPedidos.put(i.getCliente(), i.cantidadMayorDePedido());
+				clienteConPedidos.put(i.getCliente(), i.getCostePedido());
 			}else if(clienteConPedidos.containsKey(i.getCliente())) {
-				clienteConPedidos.put(i.getCliente(), clienteConPedidos.get(i.getCliente())+i.cantidadMayorDePedido());
+				clienteConPedidos.put(i.getCliente(), clienteConPedidos.get(i.getCliente())+i.getCostePedido());
 			}
 		}
 		Cliente c1=null;
-		Integer valor=0;
+		Double valor=0.0;
 		for(Cliente e: clienteConPedidos.keySet()) {
 			if(clienteConPedidos.get(e)>valor) {
 				c1=e;
